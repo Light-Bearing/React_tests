@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Life loop Demo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div id="mount-point"></div>
+    <ul id="screen"></ul>
+  </div>
+
+  <script type="text/babel">
+      function printOnPage(methodName, texts) {
+          var ul = document.getElementById('screen');
+          var li = document.createElement('li');
+          li.appendChild(document.createTextNode(methodName+' : '+texts));
+          li.className = methodName;
+          ul.appendChild(li);
+          ul.scrollTop = ul.scrollHeight;
+      }
+
+      var App = React.createClass({
+          getInitialState: function() {
+              return {
+                  id: 0,
+                  mounted: false
+              };
+          },
+
+          handleUpdateProps: function() {
+              this.setState({id: this.state.id + 1});
+          },
+
+          handleMountOrUnmount: function() {
+              this.setState({mounted: !this.state.mounted});
+          },
+
+          render: function() {
+              return (
+                  <div className='App'>
+                      {
+                          this.state.mounted
+                              ? <Component id={this.state.id} />
+                              : false
+                      }
+                      <button onClick={this.handleUpdateProps}>
+                          Update props
+                      </button>
+                      <button onClick={this.handleMountOrUnmount}>
+                          {this.state.mounted ? 'Unmount' : 'Mount'}
+                      </button>
+                  </div>
+              );
+          }
+      });
+
+      var Component = React.createClass({
+          getDefaultProps: function() {
+              printOnPage('getDefaultProps','Вызывается единожды при инициализации класса.\nОтвечает за значения параметров по умолчанию. ');
+
+              return {
+                  id : 0
+              };
+          },
+
+          getInitialState: function() {
+              printOnPage('getInitialState','Создан для определения начального состояния компонента. ');
+
+              return {
+                  id: 0
+              };
+          },
+
+          componentWillMount: function() {
+              printOnPage('componentWillMount',
+              'Вызывается один раз прямо перед тем, как состоится первый render компонента. Вызов setState в рамках данного метода дополнительного рендера не вызовет. ');
+          },
+
+          componentDidMount: function() {
+              printOnPage('componentDidMount','Вызывается один раз прямо сразу после того, как состоялся первый render компонента. ');
+              // компонент уже находится в DOM
+              // здесь можно уже взаимодействовать с DOM напрямую
+              // например, использовать jQuery или какие-то сторонние библиотеки
+          },
+
+          componentWillReceiveProps: function() {
+              printOnPage('componentWillReceiveProps',
+              'Вызывается каждый раз, когда компонент получает новые параметры. Не вызывается для первого рендера. Вызов setState в рамках данного метода дополнительного рендера не вызовет. ');
+          /*
+componentWillReceiveProps: function(nextProps) {
+    // в nextProps содержится объект с новыми параметрами
+    // старые параметры можно получить использование this.props
+    this.setState({
+        likesIncreasing: nextProps.likeCount > this.props.likeCount
+    });
+}
+*/
+          },
+
+          componentWillUpdate: function() {
+              printOnPage('componentWillUpdate',
+              'Вызывается перед вызовом метода render() при изменении параметров или состояния компонента. ');
+/*
+componentWillUpdate: function(nextProps, nextState) {
+    // в nextProps содержится объект с новыми параметрами
+    // в nextState содержится объект с измененным состоянием
+}
+
+!!! Не используйте setState() в этом методе! Так у вас может произойти зацикливание!
+*/
+          },
+
+          componentDidUpdate: function() {
+              printOnPage('componentDidUpdate',
+              'Вызывается сразу после вызова метода render() при изменении параметров или состояния компонента. ');
+              /*
+              componentDidUpdate: function(prevProps, prevState) {
+                  // в prevProps содержится объект с предыдущими параметрами
+                  // в prevState содержится объект с состоянием до изменения
+                  // измененные параметры и состояние могут быть получены через this.props и
+              this.state
+              }
+
+              Произведенные изменения уже отображены в DOM дереве. Обычно, в данном методе произво-
+              дят какие-то операции с DOM элементами согласно изменениям.
+
+              !!! Не используйте setState() в этом методе! Так у вас может произойти зацикливание!
+              */
+          },
+
+          shouldComponentUpdate: function(nextProps) {
+              printOnPage('shouldComponentUpdate',
+              'Вызывается  при  изменении  параметров  или  состояния.  Возвращает  true  (если  изменение должно вызвать перерисовку компонента) или false (если изменение не влияет на отображение компонента). ');
+/*
+shouldComponentUpdate: function(nextProps, nextState) {
+    return nextProps.id !== this.props.id;
+}
+
+Если shouldComponentUpdate возвращает false, то метод render() будет пропущен до следую-
+щего изменения параметров или состояния. По умолчанию (если не определен), всегда возвра-
+щает true. Может быть использован для улучшения быстродействия приложения (чтобы избе-
+жать лишних перерисовок), особенно, если используется огромное количество компонентов.
+*/
+              return true;
+          },
+
+          componentWillUnmount: function() {
+              printOnPage('componentWillUnmount',
+            'Вызывается перед тем, как компонент будет удален из DOM.');
+            /*
+            // обычно, в данном методе происходит некая уборка за компонентом
+               // остановка таймеров, удаление ссылок на DOM элементы и т.д.
+            */
+          },
+
+          handleUpdateState: function()  {
+              this.setState({id: this.state.id + 1});
+          },
+
+          render: function() {
+              printOnPage('render','Отрисовка');
+
+              return (
+                  <div>
+                      <div> Component state : {this.state.id} </div>
+                      <div> Component props : {this.props.id} </div>
+                      <button onClick={this.handleUpdateState}>
+                          Update state
+                      </button>
+                  </div>
+              );
+          }
+      });
+
+      ReactDOM.render(
+          <App />,
+          document.getElementById('mount-point')
+      );
+
+</script>
+</body>
+</html>
