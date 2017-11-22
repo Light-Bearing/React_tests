@@ -1,3 +1,5 @@
+var COLORS=["yellow","rgb(252, 104, 104)","rgb(118, 210, 110)","rgb(98, 135, 231)","rgb(236, 168, 87)","rgb(82, 159, 87)","rgb(143, 76, 147)"];
+
 var Note = React.createClass({
     render: function() {
         var style = { backgroundColor: this.props.color };
@@ -10,10 +12,78 @@ var Note = React.createClass({
     }
 });
 
+
+
+
+var SelectColor=React.createClass({
+  render: function(){
+    var style = { backgroundColor: this.props.color };
+    return(
+      <div className="selector-color" style={style}>
+        <label className="label-radio">
+          <input
+            id={this.props.id}
+            type="radio"
+            name="selcolor"
+            value={this.props.color}
+            defaultChecked={this.props.color===this.props.defCol}
+            onChange={this.props.onChange} />
+            <i></i>
+        </label>
+      </div>
+    );
+  }
+});
+
+var SelectorsColor=React.createClass({
+  render: function(){
+    return(
+      <div className="selectors-color">
+        <SelectColor
+          id = {"color1"}
+          color={COLORS[0]}
+          onChange={this.props.onChange}
+          defCol= {this.props.value} />
+        <SelectColor
+            id = {"color2"}
+            color={COLORS[1]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+        <SelectColor
+            id = {"color3"}
+            color={COLORS[2]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+        <SelectColor
+            id = {"color4"}
+            color={COLORS[3]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+        <SelectColor
+            id = {"color5"}
+            color={COLORS[4]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+        <SelectColor
+            id = {"color6"}
+            color={COLORS[5]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+        <SelectColor
+            id = {"color7"}
+            color={COLORS[6]}
+            onChange={this.props.onChange}
+            defCol= {this.props.value} />
+      </div>
+    );
+  }
+});
+
 var NoteEditor = React.createClass({
     getInitialState: function() {
         return {
-            text: ''
+            text: '',
+            color:'yellow'
         };
     },
 
@@ -24,14 +94,17 @@ var NoteEditor = React.createClass({
     handleNoteAdd: function() {
         var newNote = {
             text: this.state.text,
-            color: 'yellow',
+            color: this.state.color1,
+            //'yellow',
             id: Date.now()
         };
 
         this.props.onNoteAdd(newNote);
-        this.setState({ text: '' });
+        this.setState({ text: '' ,color : 'yellow'});
     },
-
+    handleColorChange: function(event){
+      this.setState({ color1: event.currentTarget.value });
+    },
     render: function() {
         return (
             <div className="note-editor">
@@ -42,6 +115,11 @@ var NoteEditor = React.createClass({
                     value={this.state.text}
                     onChange={this.handleTextChange}
                 />
+                <SelectorsColor
+                  value={this.state.color}
+                  onChange={this.handleColorChange}
+                />
+
                 <button className="add-button" onClick={this.handleNoteAdd}>Add</button>
             </div>
         );
