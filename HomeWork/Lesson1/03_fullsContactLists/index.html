@@ -53,8 +53,18 @@
                   },
                   handleOpened:function (){
                     var opened = !this.state.isOpened;
-                    alert(this.state.isOpened);
+                    
                     this.setState({isOpened : opened});
+                  },
+                  addons:function (){
+                    if (this.state.isOpened){
+
+                     return <div className="contact-addons">
+                            <div> e-mail: {this.props.email} </div>
+                            <div className="contact-adress"> adress: {this.props.adress} </div>
+                          </div>
+
+                    }
                   },
 
                     render: function() {
@@ -71,17 +81,9 @@
 
 
                                     {
-                                      function (){
+                                      this.addons()
+                                    }
 
-                                      if (this.state.isOpened){
-
-                                       return <div className="contact-addons">
-                                              <div> {this.props.email} </div>
-                                              <div className="contact-adress"> {this.props.adress} </div>
-                                            </div>
-
-                                      }
-                                      }}
 
                                 </div>
 
