@@ -15,6 +15,7 @@
             getInitialState: function() {
                 return {
                     seconds: 0,
+                    times:"00:00",
                     isPaused: false
                 };
             },
@@ -23,9 +24,32 @@
                 this.timer = setInterval(this.tick, 1000);
             },
 
+            zeroStr:function (num){
+              var result='';
+              if (Number(num)<10) {
+                result = '0'+num  ;
+              } else {
+                result = num;
+              };
+              return result;
+            },
+
             tick: function() {
               if (!this.state.isPaused){
-                this.setState({ seconds: this.state.seconds + 1 });}
+                this.setState({ seconds: Number(this.state.seconds) + 1 });
+                var times='';
+                var minutes = Math.floor(Number(this.state.seconds) /60);
+                console.log(minutes);
+                if (minutes<1) {
+                  times=this.zeroStr(Number(minutes))+':'+this.zeroStr(Number(this.state.seconds));
+                } else {
+                  times=this.zeroStr(Number(minutes))+':'+this.zeroStr(Number(this.state.seconds%60));
+                }
+
+
+
+                this.setState({times: times});
+              }
             },
 
             componentWillUnmount: function() {
@@ -55,7 +79,7 @@
                 return (
                   <div className="timer">
                     <h2> {sButton}
-                    {this.state.seconds}
+                    {this.state.times}
                     <input type="image"  onClick={this.handleReStartClick} src="./img/reStart.png" />
                     </h2>
                   </div>
