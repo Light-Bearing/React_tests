@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contacts search</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+
+</head>
+<body>
+    <div id="content"></div>
+
+    <script type="text/babel">
+
+      var MiniCalc= React.createClass({
+        getInitialState:function(){
+          return{
+            a:0,
+            b:0,
+            operation:"",
+            results:"выберете опеарцию!"
+          };
+        },
+        handleGetA:function(event){
+          var a = event.target.value;
+          console.log("a:"+a);
+          this.setState({a: a});
+        },
+        handleGetB:function(event){
+          var b = event.target.value;
+          console.log("b:"+b);
+          this.setState({b: b});
+        },
+        handleOperations:function(event){
+          var operation = event.target.value;
+          console.log("operation:"+operation);
+          this.setState({operation: operation});
+        },
+        handleGetResults:function(){
+          console.log("push button");
+            var results=this.state.a +" "+ this.state.operation+" "+this.state.b+ " = ";
+            console.log(results);
+
+            switch (this.state.operation) {
+              case "+":
+                results += Number(this.state.a)+Number(this.state.b);
+                break;
+              case "-":
+                results += Number(this.state.a)-Number(this.state.b);
+                break;
+              case "*":
+                results += Number(this.state.a)*Number(this.state.b);
+                break;
+              case "/":
+                results += Number(this.state.a)/Number(this.state.b);
+                break;
+              case "%":
+                results += (Number(this.state.a) % Number(this.state.b));
+                break;
+              default:
+             results = "выберете опеарцию!";
+            }
+          this.setState({results: results});
+
+        },
+        render:function(){
+          return(
+            <div className="mini-calc">
+              <div>
+                <label className="a">
+                  A: <input type="text" className="field-a" onChange={this.handleGetA} />
+                </label>
+              </div>
+              <div>
+                <label className="b">
+                  B: <input type="text" className="field-b" onChange={this.handleGetB} />
+                </label>
+              </div>
+              <div>
+                <label className="operation">Операция:
+                  <ul>
+                     <li><input type="radio" name="select-operations" onChange={this.handleOperations} value="+" />+</li>
+                     <li><input type="radio" name="select-operations" onChange={this.handleOperations} value="-" />-</li>
+                     <li><input type="radio" name="select-operations" onChange={this.handleOperations} value="*" />*</li>
+                     <li><input type="radio" name="select-operations" onChange={this.handleOperations} value="/" />/</li>
+                     <li><input type="radio" name="select-operations" onChange={this.handleOperations} value="%" />%</li>
+                  </ul>
+                </label>
+              </div>
+              <div>
+                <input type="button" className="button-getResult" onClick={this.handleGetResults} value="Результат"/>
+              </div>
+              <div>
+                <label className="result">{this.state.results}</label>
+              </div>
+            </div>
+          /*  <div>
+            //<h1>hello world</h1>
+            </div>*/
+          );
+        }
+      });
+
+      ReactDOM.render(
+          <MiniCalc />,
+          document.getElementById("content")
+        );
+    </script>
+</body>
+</html>
