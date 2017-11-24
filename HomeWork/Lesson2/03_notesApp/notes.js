@@ -36,44 +36,26 @@ var SelectColor=React.createClass({
 });
 
 var SelectorsColor=React.createClass({
+  getInitialState: function() {
+      return {
+          displayedColors: COLORS
+      };
+  },
+
   render: function(){
     return(
       <div className="selectors-color">
-        <SelectColor
-          id = {"color1"}
-          color={COLORS[0]}
-          onChange={this.props.onChange}
-          defCol= {this.props.value} />
-        <SelectColor
-            id = {"color2"}
-            color={COLORS[1]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
-        <SelectColor
-            id = {"color3"}
-            color={COLORS[2]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
-        <SelectColor
-            id = {"color4"}
-            color={COLORS[3]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
-        <SelectColor
-            id = {"color5"}
-            color={COLORS[4]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
-        <SelectColor
-            id = {"color6"}
-            color={COLORS[5]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
-        <SelectColor
-            id = {"color7"}
-            color={COLORS[6]}
-            onChange={this.props.onChange}
-            defCol= {this.props.value} />
+
+      {
+        this.state.displayedColors.map(function(el){
+          return <SelectColor
+                    key={el}
+                    color={el}
+                    onChange={this.props.onChange}
+                    defCol= {this.props.value}
+                   />;
+        }.bind(this))
+      }
       </div>
     );
   }
@@ -95,7 +77,6 @@ var NoteEditor = React.createClass({
         var newNote = {
             text: this.state.text,
             color: this.state.color1,
-            //'yellow',
             id: Date.now()
         };
 
@@ -181,7 +162,6 @@ var SearchNote=React.createClass({
 
 var NotesApp = React.createClass({
     getInitialState: function() {
-      console.log('getInitialState');
         return {
             notes: [],
             filteredNotes:[],
@@ -190,7 +170,6 @@ var NotesApp = React.createClass({
     },
 
     componentDidMount: function() {
-      console.log('componentDidMount');
         var localNotes = JSON.parse(localStorage.getItem('notes'));
         if (localNotes) {
             this.setState({ notes: localNotes });
@@ -198,14 +177,10 @@ var NotesApp = React.createClass({
     },
 
     componentDidUpdate: function() {
-      console.log('componentDidUpdate');
-
         this._updateLocalStorage();
-
     },
 
     handleNoteDelete: function(note) {
-      console.log('handleNoteDelete');
         var noteId = note.id;
         var searchQuery=this.state.searchQuery;
         var newNotes = this.state.notes.filter(function(note) {
@@ -217,25 +192,23 @@ var NotesApp = React.createClass({
     },
 
     handleNoteAdd: function(newNote) {
-        console.log('handleNoteAdd');
         var newNotes = this.state.notes.slice();
         newNotes.unshift(newNote);
-        if (this.state.searchQuery !== ''){
-          this.setState({ notes: newNotes, searchQuery : ''});}
+        if (this.state.searchQuery === ''){
+          this.setState({ notes: newNotes});}
         else {
-          this.setState({ notes: newNotes});
-//          this.
+          var searchValue= newNote.text.toLowerCase();
+          if (searchValue.indexOf(this.state.searchQuery) !==-1){
+            var newFiltredNotes = this.state.filteredNotes.slice();
+            newFiltredNotes.unshift(newNote);
+            this.setState({ notes: newNotes,filteredNotes: newFiltredNotes});
+          }else{
+            this.setState({ notes: newNotes});}
         };
-      //  this.handleonSearchChanges(this.state.searchQuery);
     },
     handleonSearchChanges:function(query){
-      console.log('handleonSearchChanges');
-        // console.log(query);
-
         var searchQuery =  query;
         var localNotes = this.state.notes;
-        // console.log(localNotes);
-        // console.log(this.state.notes);
         var notes = localNotes.filter(function(el){
             var searchValue = el.text.toLowerCase();
             return searchValue.indexOf(searchQuery) !== -1;
@@ -243,18 +216,19 @@ var NotesApp = React.createClass({
         if (notes) {
             this.setState({ filteredNotes: notes,searchQuery:query});
         }
-
     },
 
     printGrid:
       function(){
-      console.log("printGrid this.state.searchQuery:'"+this.state.searchQuery+"'");
       if(this.state.searchQuery===''){
         return <NotesGrid notes={this.state.notes} onNoteDelete={this.handleNoteDelete} />
       } else{
         if (this.state.filteredNotes.length === 0){
-            alert("Ни чего не найдено!") }else
-        {return <NotesGrid notes={this.state.filteredNotes} onNoteDelete={this.handleNoteDelete} />
+            return <div className="notes-grid" >
+              <label> Ничего не найдено...</label>
+            </div>
+          }else{
+        return <NotesGrid notes={this.state.filteredNotes} onNoteDelete={this.handleNoteDelete} />
       }}
     },
 
@@ -264,16 +238,12 @@ var NotesApp = React.createClass({
                 <h2 className="app-header">NotesApp</h2>
                 <SearchNote value={this.state.searchQuery} onSearch={this.handleonSearchChanges}/>
                 <NoteEditor onNoteAdd={this.handleNoteAdd} />
-
                 {this.printGrid()}
-
             </div>
         );
     },
 
     _updateLocalStorage: function() {
-
-        console.log('_updateLocalStorage');
         var notes = JSON.stringify(this.state.notes);
         localStorage.setItem('notes', notes);
     }
