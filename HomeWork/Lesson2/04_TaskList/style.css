@@ -1,0 +1,58 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  font-weight: 300;
+  background-color: #eaeaea;
+}
+#mount-point {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+input[type="radio"]{
+  display: none;
+}
+label.label-radio {
+  display: inline-block;
+  margin: 10px 5px;
+  cursor: pointer;
+}
+label.label-radio::before {
+  transform: scale(0);
+  transition: .4s;
+  font-size: 12px;
+}
+input[type="radio"]:checked+label.label-radio::before {
+  transform: scale(1);
+   font-weight: bold;
+   font-size: 18px;
+}
+.task-app{
+  border: 1px solid;
+  padding: 15px;;
+}
+ .task-add{
+   border: 1px solid;
+   padding: 15px;;
+ }
+ .filter-controls{
+   border: 1px solid;
+   padding: 15px;;
+ }
+ .task-list{
+   border: 1px solid;
+   padding: 15px;;
+ }
