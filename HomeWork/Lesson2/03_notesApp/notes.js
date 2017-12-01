@@ -221,7 +221,10 @@ var NotesApp = React.createClass({
     printGrid:
       function(){
       if(this.state.searchQuery===''){
-        return <NotesGrid notes={this.state.notes} onNoteDelete={this.handleNoteDelete} />
+        return <NotesGrid
+                  notes={this.state.notes}
+                  onNoteDelete={this.handleNoteDelete}
+                />
       } else{
         if (this.state.filteredNotes.length === 0){
             return <div className="notes-grid" >
