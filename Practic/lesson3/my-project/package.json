@@ -1,0 +1,19 @@
+{
+  "name": "my-project",
+  "version": "0.0.1",
+  "description": "This is demo project",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LightBearing",
+  "dependencies": {
+    "babel": "~5.8.21",
+    "react": "0.14.x",
+    "react-dom": "0.14.x"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "*"
+  }
+}
