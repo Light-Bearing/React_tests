@@ -1,1 +1,2 @@
-console.log("hellow world!");
+const name = "Light Bearing - antichrist"
+console.log(`Hello ${name}!!!!`);
